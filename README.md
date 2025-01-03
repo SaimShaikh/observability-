@@ -45,22 +45,6 @@
 
 
   Step 1 : install.sh
-  
-#!/bin/bash
-[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
-chmod +x ./kind
-sudo cp ./kind /usr/local/bin/kind
-VERSION="v1.30.0"
-URL="https://dl.k8s.io/release/${VERSION}/bin/linux/amd64/kubectl"
-INSTALL_DIR="/usr/local/bin"
-curl -LO "$URL"
-chmod +x kubectl
-sudo mv kubectl $INSTALL_DIR/
-kubectl version --client
-rm -f kubectl
-rm -rf kind
-echo "kind & kubectl installation complete."
-
 Commands:
 chmod 777 install.sh
 ./install.sh 
@@ -78,25 +62,6 @@ docker ps
 Step 3: kind Cluster Insatlling
 -config .yml
 
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-nodes:
-- role: control-plane
-  image: kindest/node:v1.31.2
-- role: worker
-  image: kindest/node:v1.31.2
-- role: worker
-  image: kindest/node:v1.31.2
-- role: worker
-  image: kindest/node:v1.31.2
-  extraPortMappings:
-   - containerPort: 80
-     hostPort: 80 
-     protocol: TCP
-   - containerPort: 443
-     hostPort: 443
-     protocol: TCP 
-
 Commands:
 kubectl version
 kind create cluster --name=mycluster --config=config.yml # command for create cluster
@@ -104,22 +69,13 @@ kubectl get nodes
 
 Step 4: Install Helm 
 
-commands:
-Install Helm commands 
-  
-$ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-$ chmod 700 get_helm.sh
-$ ./get_helm.sh
 
-
-
->
  **kubectl get namespaces
  kubectl create namespace monitoring 
  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
  helm repo list
  helm repo update
- helm install prometheus-stack prometheus-community/kube-prometheus-stack --namespace monitoring --set prometheus.service.nodePort=3000 --set grafana.service.nodePort=31000 --set grafana.service.type=NodePort --set prometheus.service.type=NodePort
+helm install prometheus-stack prometheus-community/kube-prometheus-stack --namespace monitoring --set prometheus.service.nodePort=3000 --set grafana.service.nodePort=31000 --set grafana.service.type=NodePort --set prometheus.service.type=NodePort
 kubectl get pods -n monitoring
 kubectl get nodes
 kubectl get svc -n monitoring
@@ -129,7 +85,8 @@ sudo apt-get update
 kubectl port-forward svc/prometheus-stack-grafana 3000:80 -n monitoring --address=0.0.0.0 &
 kubectl get secret prometheus-stack-grafana  -n monitoring -o jsonpath="{.data.admin-password}" | base64 --decode # this is grafana password
 
-Now Install any appliction for monitoring 
+
+Step 5 : Now Install any appliction for monitoring 
 Commands: 
 git clone https://github.com/LondheShubham153/k8s-kind-voting-app.git
 cd k8s-kind-voting-app/
@@ -142,7 +99,7 @@ ls
 kubectl get svc 
 kubectl port-forward svc/vote 5000:5000 --address=0.0.0.0 &
 kubectl port-forward svc/result 5001:5001 --address=0.0.0.0 &
-**
+
 AWS Inbound Security (open Ports )
 <img width="1680" alt="Screenshot 2025-01-01 at 5 36 42 PM" src="https://github.com/user-attachments/assets/45c079fc-f66c-446d-9b05-601b8ce15216" />
 
